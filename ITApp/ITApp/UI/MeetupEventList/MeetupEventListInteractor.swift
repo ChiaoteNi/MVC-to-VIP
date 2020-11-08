@@ -9,12 +9,6 @@
 //  is goaled to help you apply clean architecture to your iOS projects,
 //
 
-/*
- Interactor: 任務指派者，叫worker幫ViewController做事
- ex: 透過worker拉API/DB資料，回傳資料的排序，開啟部分監聽，圖片壓縮，邏輯運算...等等
- 反正跟UI完全無關的全部塞這就對了www
- */
-
 import Foundation
 
 protocol MeetupEventListBusinessLogic {
@@ -68,18 +62,28 @@ final class MeetupEventListInteractor: MeetupEventListBusinessLogic {
     }
     
     func tapFavorite(request: MeetupEventList.TapFavorite.Request) {
-        // TODO: 先用eventID取出這次要更新的meetupEvent
-        // 將該event變更為相反的狀態，請favoriteWorker更新狀態，重新寫入historyEvents
-        // 最後將Event交給presenter，請presenter更新 活動紀錄 類型的活動
-        // 這邊可注意到，我們其實從一個use case的request，轉接到另一個use case
+        guard
+            let index = historyEvents.firstIndex (where: { $0.meetupEvent.id == request.meetupEventID }),
+            let updateEvent = historyEvents[safe: index] else { return }
         
-        //        historyEvents[safe: index] = newResponseItem
-        presenter?.presentUpdateHistoryEvent(response: <#T##MeetupEventList.UpdateHistoryEvent.Response#>)
+        let newState = !updateEvent.favoriteState
+        let newResponseItem = (updateEvent.meetupEvent, newState)
+        
+        switch newState {
+        case .favorite:
+            favoriteWorker.addFavoriteMeetupEvent(with: updateEvent.meetupEvent.id)
+        case .unfavorite:
+            favoriteWorker.removeFavoriteMeetupEvent(with: updateEvent.meetupEvent.id)
+        }
+        
+        historyEvents[safe: index] = newResponseItem
+        
+        let response: MeetupEventList.UpdateHistoryEvent.Response = .init(targetEvent: newResponseItem)
+        presenter?.presentUpdateHistoryEvent(response: response)
     }
     
     func subscribeFavoriteUpdate(request: MeetupEventList.SubscribeFavoriteUpdate.Request) {
         favoriteWorker.addObserver(self)
-        // TODO: favoriteWorker addObserver，並在 MeetupEventFavorite Observer 那邊處理更新的資料
     }
     
     func unsubscribeFavoriteUpdate(request: MeetupEventList.UnsubscribeFavoriteUpdate.Request) {
@@ -91,10 +95,15 @@ final class MeetupEventListInteractor: MeetupEventListBusinessLogic {
 extension MeetupEventListInteractor: MeetupEventFavoriteObserver {
     
     func favoriteStateDidChanged(eventID: String, to newState: MeetupEventFavoriteState) {
-        // TODO: 收到更新狀態的EventID與新的Favotire狀態，用類似tapFavorite的實作方式(但不用顛倒狀態)更新資料
-        // 然後再請presenter更新 活動紀錄 類型的活動
+        guard
+            let index = historyEvents.firstIndex (where: { $0.meetupEvent.id == eventID }),
+            let updateEvent = historyEvents[safe: index] else { return }
         
-        presenter?.presentUpdateHistoryEvent(response: <#T##MeetupEventList.UpdateHistoryEvent.Response#>)
+        let newResponseItem = (updateEvent.meetupEvent, newState)
+        historyEvents[safe: index] = newResponseItem
+        
+        let response: MeetupEventList.UpdateHistoryEvent.Response = .init(targetEvent: newResponseItem)
+        presenter?.presentUpdateHistoryEvent(response: response)
     }
 }
 

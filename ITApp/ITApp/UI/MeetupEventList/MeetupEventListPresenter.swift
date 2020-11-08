@@ -9,12 +9,6 @@
 //  is goaled to help you apply clean architecture to your iOS projects,
 //
 
-/*
- Presenter： DataModel -> UIModel的轉換者
- 負責把原本在VC / Cell身上的轉換邏輯全部放在這
- ex: Date()->"兩天前" or "11月08日", userType->"管理者" or "素人"
- */
-
 import UIKit
 
 protocol MeetupEventListPresentationLogic {
@@ -52,10 +46,14 @@ final class MeetupEventListPresenter: MeetupEventListPresentationLogic {
     }
     
     func presentUpdateHistoryEvent(response: MeetupEventList.UpdateHistoryEvent.Response) {
-        // TODO: 將response轉換成MeetupEventList.UpdateHistoryEvent.ViewModel，再轉交給VC
+        let event = makeHistoryDisplayEvent(
+            with: response.targetEvent.meetupEvent,
+            favoriteState: response.targetEvent.favoriteState
+        )
+        let viewModel: MeetupEventList.UpdateHistoryEvent.ViewModel = .init(targetEvent: event)
         
         DispatchQueue.main.async {
-            self.viewController?.displayUpdateHistoryEvent(viewModel: <#T##MeetupEventList.UpdateHistoryEvent.ViewModel#>)
+            self.viewController?.displayUpdateHistoryEvent(viewModel: viewModel)
         }
     }
 }

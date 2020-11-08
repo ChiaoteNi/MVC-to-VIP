@@ -5,11 +5,6 @@
 //  Created by kuotinyen on 2020/10/4.
 //
 
-/*
- ViewController： 回歸畫面的顯示，以及資料流的觸發
- ex: 把UIModel無腦塞到畫面上，請interactor幫忙拉資料
- */
-
 import UIKit
 import Kingfisher
 
@@ -79,7 +74,11 @@ final class MeetupEventListViewController: UIViewController, MeetupEventListDisp
     }
     
     func displayUpdateHistoryEvent(viewModel: MeetupEventList.UpdateHistoryEvent.ViewModel) {
-        // TODO: 用eventID抓出要更新的historyEvent，用ViewModel的內容做更新，最後請tableView reload那個dataSource所代表的Row
+        guard let index = historyEvents.firstIndex(where: { $0.id == viewModel.targetEvent.id }) else { return }
+        historyEvents[index] = viewModel.targetEvent
+        
+        guard let section = SectionType.allCases.firstIndex(where: { $0 == .history }) else { return }
+        tableView.reloadRows(at: [.init(row: index, section: section)], with: .fade)
     }
 }
 
@@ -111,11 +110,13 @@ extension MeetupEventListViewController {
     }
     
     private func subscribeFavoriteChange() {
-        // TODO: 請Interactor開始監聽Favorite的狀態更新
+        let request: MeetupEventList.SubscribeFavoriteUpdate.Request = .init()
+        interactor?.subscribeFavoriteUpdate(request: request)
     }
     
     private func unsubscribeFavoriteChange() {
-        // TODO: 請Interactor解除監聽Favorite的狀態更新
+        let request: MeetupEventList.UnsubscribeFavoriteUpdate.Request = .init()
+        interactor?.unsubscribeFavoriteUpdate(request: request)
     }
 }
 
@@ -148,9 +149,11 @@ extension MeetupEventListViewController: UITableViewDataSource {
         case .history:
             if let cell = tableView.dequeueReusableCell(withIdentifier: HistoryMeetupEventCell.reusableIdentifier, for: indexPath) as? HistoryMeetupEventCell {
                 guard let meetupEvent = historyEvents[safe: indexPath.row] else { return cell }
+                
                 cell.configureCell(with: meetupEvent)
                 cell.tapFavoriteCallBack = { [weak self] in
-                    // TODO: 請interactor執行tapFavorite
+                    let reqeust: MeetupEventList.TapFavorite.Request = .init(meetupEventID: meetupEvent.id)
+                    self?.interactor?.tapFavorite(request: reqeust)
                 }
                 return cell
             }
