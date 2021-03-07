@@ -26,7 +26,10 @@ class MeetupEventListViewControllerTests: XCTestCase {
         sut.cp_resetInteractor(interactor: interactorSpy)
         sut.viewDidLoad()
         
-        XCTAssert(interactorSpy.isFetchMeetupEventsCalled, "MeetupEventList should fetch events when viewDidLoad.")
+        XCTAssert(
+            interactorSpy.isFetchMeetupEventsCalled,
+            "MeetupEventList should fetch events when viewDidLoad."
+        )
     }
 
     func testShouldUpdateDataSourceAndReloadDataWhenDisplayFetchEvents() throws {
@@ -40,8 +43,14 @@ class MeetupEventListViewControllerTests: XCTestCase {
             recentlyEvents: []
         )
         sut.displayMeetupEvents(viewModel: viewModel)
-        XCTAssert(spy.isReloadDataCalled, "TableView should reload after displayMeetupEvents.")
-        XCTAssert(spy.numberOfRows(inSection: 1) == 2, "The number of row sections 1 should be the same as historyEvents amounts.")
+        XCTAssert(
+            spy.isReloadDataCalled,
+            "TableView should reload after displayMeetupEvents."
+        )
+        XCTAssert(
+            spy.numberOfRows(inSection: 1) == 2,
+            "The number of row sections 1 should be the same as historyEvents amounts."
+         )
     }
 }
 

@@ -33,7 +33,10 @@ class MeetupEventListInteractorTests: XCTestCase {
         let request: MeetupEventList.FetchEvents.Request = .init()
         sut.fetchMeetupEvents(request: request)
         
-        XCTAssert(fetchEventsWorker.isFetchMeetupEventsCalled, "FetchEventsWorker not called.")
+        XCTAssert(
+            fetchEventsWorker.isFetchMeetupEventsCalled,
+            "FetchEventsWorker not called."
+        )
         
         XCTAssertEqual(
             presenterSpy.fetchEventsResponse.recentlyEvents.count,
@@ -59,13 +62,24 @@ class MeetupEventListInteractorTests: XCTestCase {
         ]
         sut.cp_resetHistoryEvents(eventResponseItems: fakeEvents)
         
-        let favoriteRequest: MeetupEventList.TapFavorite.Request = .init(meetupEventID: Seed.Event.historyEvent.id)
+        let favoriteRequest: MeetupEventList.TapFavorite.Request = .init(
+            meetupEventID: Seed.Event.historyEvent.id
+        )
         sut.tapFavorite(request: favoriteRequest)
-        XCTAssertEqual(presenterSpy.updateEventsResponse.targetEvent.favoriteState, .unfavorite, "TapFavorite UseCase goes wrong.")
+        XCTAssertEqual(
+            presenterSpy.updateEventsResponse.targetEvent.favoriteState,
+            .unfavorite,
+            "TapFavorite UseCase goes wrong."
+        )
         
-        let unfavoriteRequest: MeetupEventList.TapFavorite.Request = .init(meetupEventID: Seed.Event.fakeEvent.id)
+        let unfavoriteRequest: MeetupEventList.TapFavorite.Request = .init(
+            meetupEventID: Seed.Event.fakeEvent.id
+        )
         sut.tapFavorite(request: unfavoriteRequest)
-        XCTAssertEqual(presenterSpy.updateEventsResponse.targetEvent.favoriteState, .favorite, "TapFavorite UseCase goes wrong.")
+        XCTAssertEqual(
+            presenterSpy.updateEventsResponse.targetEvent.favoriteState, .favorite,
+            "TapFavorite UseCase goes wrong."
+        )
     }
 }
 

@@ -39,11 +39,11 @@ class MeetupEventListPresenterTests: XCTestCase {
         
         let recentlyEvent = Seed.Event.onTodayEvent
         let historyEvent = Seed.Event.historyEvent
+        
         let fetchEventResponse: MeetupEventList.FetchEvents.Response = .init(
             recentlyEvents: [(recentlyEvent, .favorite)],
             historyEvents: [(historyEvent, .favorite)]
         )
-        
         let updateEventResponse: MeetupEventList.UpdateHistoryEvent.Response = .init(
             targetEvent: (historyEvent, .favorite)
         )
@@ -53,8 +53,14 @@ class MeetupEventListPresenterTests: XCTestCase {
         
         wait(for: [fetchEventsExpectation, updateEventsExpectation], timeout: 2)
         
-        XCTAssert(viewControllerSpy.isDisplayMeetupEventsCalled, "DisplayMeetupEvents not called.")
-        XCTAssert(viewControllerSpy.isDisplayUpdateHistoryEventCalled, "DisplayUpdateHistoryEvent not called.")
+        XCTAssert(
+            viewControllerSpy.isDisplayMeetupEventsCalled,
+            "DisplayMeetupEvents not called."
+        )
+        XCTAssert(
+            viewControllerSpy.isDisplayUpdateHistoryEventCalled,
+            "DisplayUpdateHistoryEvent not called."
+        )
     }
     
     func testPresentFetchEventShouldFormatEventForDisplay() throws {
@@ -85,17 +91,48 @@ class MeetupEventListPresenterTests: XCTestCase {
         let recentlyDisplayEvent = viewControllerSpy.fetchEventsViewModel.recentlyEvents.first!
         let historyDisplayEvents = viewControllerSpy.fetchEventsViewModel.historyEvents
         
-        XCTAssertEqual(recentlyDisplayEvent.hostName, Seed.Event.onTodayEvent.hostName, "Host name format not correct.")
+        XCTAssertEqual(
+            recentlyDisplayEvent.hostName,
+            Seed.Event.onTodayEvent.hostName,
+            "Host name format not correct."
+        )
         
-        XCTAssertEqual(recentlyDisplayEvent.coverImageURL, URL(string: Seed.Event.onTodayEvent.coverImageLink!), "ConverImageURL format not correct.")
-        XCTAssertEqual(historyDisplayEvents[4].coverImageURL, nil, "Case with no coverImage url formet not correct.")
+        XCTAssertEqual(
+            recentlyDisplayEvent.coverImageURL,
+            URL(string: Seed.Event.onTodayEvent.coverImageLink!),
+            "ConverImageURL format not correct."
+        )
+        XCTAssertEqual(
+            historyDisplayEvents[4].coverImageURL,
+            nil,
+            "Case with no coverImage url formet not correct."
+        )
         
-        XCTAssert(recentlyDisplayEvent.dateText.contains("(今天)"), "Date formet not correct.")
-        XCTAssertEqual(historyDisplayEvents[2].dateText, "11月14日", "Date formet not correct.")
-        XCTAssertEqual(historyDisplayEvents[3].dateText, "", "Case with no date formet not correct.")
+        XCTAssert(
+            recentlyDisplayEvent.dateText.contains("(今天)"),
+            "Date formet not correct."
+        )
+        XCTAssertEqual(
+            historyDisplayEvents[2].dateText,
+            "11月14日",
+            "Date formet not correct."
+        )
+        XCTAssertEqual(
+            historyDisplayEvents[3].dateText,
+            "",
+            "Case with no date formet not correct."
+        )
         
-        XCTAssertEqual(historyDisplayEvents[0].favoriteButtonColor, UIColor.itOrange, "Formet with favorite event button color not correct.")
-        XCTAssertEqual(historyDisplayEvents[1].favoriteButtonColor, UIColor.itLightGray, "Formet with unfavorite event button color not correct.")
+        XCTAssertEqual(
+            historyDisplayEvents[0].favoriteButtonColor,
+            UIColor.itOrange,
+            "Formet with favorite event button color not correct."
+        )
+        XCTAssertEqual(
+            historyDisplayEvents[1].favoriteButtonColor,
+            UIColor.itLightGray,
+            "Formet with unfavorite event button color not correct."
+        )
     }
     
     func testPresentUpdateHistoryEventShouldFormatEventForDisplay() throws {
@@ -110,7 +147,10 @@ class MeetupEventListPresenterTests: XCTestCase {
         sut.presentUpdateHistoryEvent(response: response)
         wait(for: [expectation], timeout: 2)
         
-        XCTAssert(!viewControllerSpy.updateEventsViewModel.targetEvent.dateText.contains("(今天)"), "Date formet not correct.")
+        XCTAssert(
+            !viewControllerSpy.updateEventsViewModel.targetEvent.dateText.contains("(今天)"),
+            "Date formet not correct."
+        )
     }
 }
 

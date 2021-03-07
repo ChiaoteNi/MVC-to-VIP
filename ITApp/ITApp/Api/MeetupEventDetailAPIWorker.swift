@@ -31,7 +31,8 @@ class MeetupEventDetailAPIWorker {
         jsonAPIWorker.fetchModel(from: url) { (result: Result<MeetupEventListResultRawModel, Error>) in
             switch result {
             case let .success(resultRawModel):
-                guard let targetEvent = resultRawModel.data.first(where: { $0.id == eventID }) else {
+                guard let targetEvent = resultRawModel
+                        .data.first(where: { $0.id == eventID }) else {
                     return callback(.failure(DemoAPIError()))
                 }
                 

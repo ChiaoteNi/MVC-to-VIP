@@ -10,7 +10,7 @@ import XCTest
 
 class MeetupEventListAPIWorkerTests: XCTestCase {
 
-    private var sut: MeetupEventListAPIWorker!
+    private var sut: MeetupEventListAPIWorker! // system under test
 
     func testFetchMeetupEventsSuccess() {
         sut = MeetupEventListAPIWorker(jsonAPIWorker: JsonAPIWorkerSuccessStub())
@@ -43,10 +43,12 @@ class MeetupEventListAPIWorkerTests: XCTestCase {
 // MARK: - JsonAPIWorkerMock
 
 private extension MeetupEventListAPIWorkerTests {
+    
     class JsonAPIWorkerSuccessStub: JsonAPIWorker {
         private let jsonFileWorker: JsonFileWorker = .init()
 
-        override func fetchModel<Model>(from url: URL, callback: @escaping (Result<Model, Error>) -> Void) where Model : Decodable, Model : Encodable {
+        override func fetchModel<Model>(from url: URL,
+                                        callback: @escaping (Result<Model, Error>) -> Void) where Model: Decodable, Model: Encodable {
             jsonFileWorker.fetchModel(from: url.absoluteString, callback: callback)
         }
     }
@@ -55,7 +57,8 @@ private extension MeetupEventListAPIWorkerTests {
         private let jsonFileWorker: JsonFileWorker = .init()
         var error: Error!
 
-        override func fetchModel<Model>(from url: URL, callback: @escaping (Result<Model, Error>) -> Void) where Model : Decodable, Model : Encodable {
+        override func fetchModel<Model>(from url: URL,
+                                        callback: @escaping (Result<Model, Error>) -> Void) where Model: Decodable, Model: Encodable {
             callback(.failure(error))
         }
     }
