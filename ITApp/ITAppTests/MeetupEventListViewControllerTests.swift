@@ -49,7 +49,7 @@ struct MeetupEventListVCTests {
             sut = .init()
         }
 
-        @Test("fetchData - reload TableView ")
+        @MainActor @Test("fetchData - reload TableView ")
         func reloadTableViewAfterFetchData() {
             let spy: TableViewSpy = .init()
             sut.cp_resetTableView(tableView: spy)
