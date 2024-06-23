@@ -92,17 +92,6 @@ final class MeetupEventListViewControllerTests: XCTestCase {
         #expect(interactorSpy.isFetchMeetupEventsCalled, "MeetupEventList should fetch events when viewDidLoad.")
     }
 
-    func testShouldFetchMeetupEventsWhenViewDidLoad() throws {
-        let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
-        sut.cp_resetInteractor(interactor: interactorSpy)
-        sut.viewDidLoad()
-        
-        XCTAssert(
-            interactorSpy.isFetchMeetupEventsCalled,
-            "MeetupEventList should fetch events when viewDidLoad."
-        )
-    }
-
     func testShouldUpdateDataSourceAndReloadDataWhenDisplayFetchEvents() throws {
         let spy: TableViewSpy = .init()
         sut.cp_resetTableView(tableView: spy)
