@@ -10,8 +10,9 @@ import XCTest
 import Testing
 @testable import ITApp
 
-// NOTE:
-@Suite("MeetupEventListVCTests") // not required
+// 1. The macro @Suite is not required, the struct/class will be marked as a suite automatically when there's a @Test in its scope
+// 2. When you use a tag on a suite, all of its tests and sub-suite are with that tag as well
+@Suite("MeetupEventListVCTests", .tags(.categorizedTest)) //
 struct MeetupEventListVCTests {
 
     // Useful during developing
@@ -39,7 +40,8 @@ struct MeetupEventListVCTests {
         }
     }
 
-    @Suite("Data flow")
+    // In this case, this sub-suite has 2 tags: dataFlow & categorizedTest
+    @Suite("Data flow", .tags(.dataFlow))
     struct DataFlowCases {
 
         private var sut: MeetupEventListViewController
