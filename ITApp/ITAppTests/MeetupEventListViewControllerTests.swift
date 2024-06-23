@@ -10,28 +10,59 @@ import XCTest
 import Testing
 @testable import ITApp
 
-// NOTE: 
-@Suite("Behavior with life cycle for the MeetupEventList") // not required
+// NOTE:
+@Suite("MeetupEventListVCTests") // not required
 struct MeetupEventListVCTests {
 
-    private var sut: MeetupEventListViewController
+    // Useful during developing
+    @MainActor @Suite("Behavior within life cycle")
+    struct LifeCycleRelatedCases {
 
-    @MainActor // NOTE:
-    init() throws {
-        sut = .init() // NOTE:
+        private var sut: MeetupEventListViewController
+
+        init() throws {
+            sut = .init()
+        }
+
+        // // NOTE:
+        //    deinit {
+        //        sut = nil
+        //    }
+
+        @Test("viewDidLoad - fetch data") // NOTE:
+        func viewDidLoadBehavior() {
+            let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
+            sut.cp_resetInteractor(interactor: interactorSpy)
+            sut.viewDidLoad()
+
+            #expect(interactorSpy.isFetchMeetupEventsCalled, "MeetupEventList should fetch events when viewDidLoad.")
+        }
     }
-// // NOTE:
-//    deinit {
-//        sut = nil
-//    }
 
-    @Test @MainActor // NOTE:
-    func viewDidLoadBehavior() {
-        let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
-        sut.cp_resetInteractor(interactor: interactorSpy)
-        sut.viewDidLoad()
+    @Suite("Data flow")
+    struct DataFlowCases {
 
-        #expect(interactorSpy.isFetchMeetupEventsCalled, "MeetupEventList should fetch events when viewDidLoad.")
+        private var sut: MeetupEventListViewController
+
+        @MainActor
+        init() throws {
+            sut = .init()
+        }
+
+        @Test("fetchData - reload TableView ")
+        func reloadTableViewAfterFetchData() {
+            let spy: TableViewSpy = .init()
+            sut.cp_resetTableView(tableView: spy)
+            sut.viewDidLoad()
+
+            let viewModel: MeetupEventList.FetchEvents.ViewModel = .init(
+                historyEvents: [Seed.Event.historyEvent, Seed.Event.dummyEvent],
+                recentlyEvents: []
+            )
+            sut.displayMeetupEvents(viewModel: viewModel)
+            #expect(spy.isReloadDataCalled, "TableView should reload after displayMeetupEvents.")
+            #expect(spy.numberOfRows(inSection: 1) == 2, "The number of row sections 1 should be the same as historyEvents amounts.")
+        }
     }
 }
 
