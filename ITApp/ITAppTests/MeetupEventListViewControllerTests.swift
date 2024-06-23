@@ -78,7 +78,11 @@ final class MeetupEventListViewControllerTests: XCTestCase {
         sut = nil
     }
 
-    @Test @MainActor // NOTE:
+    // NOTE: we can just add test case with the @Test macro,
+    // and it will display on the Test navigator as well.
+    // However, somehow it wont display the checkbox within the editing area,
+    // and I'm not sure if it's a bug from Xcode or apple intently doing this.
+    @Test @MainActor
     func viewDidLoadBehavior() {
         sut = .init()
         let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
@@ -119,6 +123,8 @@ final class MeetupEventListViewControllerTests: XCTestCase {
             "The number of row sections 1 should be the same as historyEvents amounts."
          )
     }
+    // NOTE: for more details, please see here:
+    // https://developer.apple.com/documentation/testing/migratingfromxctest
 }
 
 private class MeetupEventListBusinessLogicSpy: MeetupEventListBusinessLogic {
