@@ -10,20 +10,21 @@ import XCTest
 import Testing
 @testable import ITApp
 
+// NOTE: 
 struct MeetupEventListVCTests {
 
     private var sut: MeetupEventListViewController
 
-    @MainActor
+    @MainActor // NOTE:
     init() throws {
-        sut = .init()
+        sut = .init() // NOTE:
     }
-//
+// // NOTE:
 //    deinit {
 //        sut = nil
 //    }
 
-    @Test @MainActor
+    @Test @MainActor // NOTE:
     func viewDidLoadBehavior() {
         let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
         sut.cp_resetInteractor(interactor: interactorSpy)
@@ -45,7 +46,7 @@ final class MeetupEventListViewControllerTests: XCTestCase {
         sut = nil
     }
 
-    @Test @MainActor
+    @Test @MainActor // NOTE:
     func viewDidLoadBehavior() {
         sut = .init()
         let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
