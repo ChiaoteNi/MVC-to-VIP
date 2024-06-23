@@ -22,7 +22,6 @@
 		0599029F2522141F0077BAA2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0599029D2522141F0077BAA2 /* Main.storyboard */; };
 		059902A1252214210077BAA2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 059902A0252214210077BAA2 /* Assets.xcassets */; };
 		059902A4252214210077BAA2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 059902A2252214210077BAA2 /* LaunchScreen.storyboard */; };
-		059902AF252214210077BAA2 /* ITAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059902AE252214210077BAA2 /* ITAppTests.swift */; };
 		059902BA252214210077BAA2 /* ITAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059902B9252214210077BAA2 /* ITAppUITests.swift */; };
 		05D324BE254720DF00F50213 /* MeetupEventListAPIWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D324BD254720DF00F50213 /* MeetupEventListAPIWorker.swift */; };
 		05D324C32547294600F50213 /* JsonAPIWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D324C22547294600F50213 /* JsonAPIWorker.swift */; };
@@ -85,7 +84,6 @@
 		059902A3252214210077BAA2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		059902A5252214210077BAA2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		059902AA252214210077BAA2 /* ITAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ITAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		059902AE252214210077BAA2 /* ITAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ITAppTests.swift; sourceTree = "<group>"; };
 		059902B0252214210077BAA2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		059902B5252214210077BAA2 /* ITAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ITAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		059902B9252214210077BAA2 /* ITAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ITAppUITests.swift; sourceTree = "<group>"; };
@@ -253,7 +251,6 @@
 		059902AD252214210077BAA2 /* ITAppTests */ = {
 			isa = PBXGroup;
 			children = (
-				059902AE252214210077BAA2 /* ITAppTests.swift */,
 				059902B0252214210077BAA2 /* Info.plist */,
 				6544B16E255319E600A2CF7D /* DummyFactory.swift */,
 				05D324CC25472D4300F50213 /* MeetupEventListAPIWorkerTests.swift */,
@@ -616,7 +613,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				05D326A225487CAB00F50213 /* MeetupEventFavoriteWorkerTests.swift in Sources */,
-				059902AF252214210077BAA2 /* ITAppTests.swift in Sources */,
 				6544B16F255319E600A2CF7D /* DummyFactory.swift in Sources */,
 				6544B1692550640B00A2CF7D /* MeetupEventListInteractorTests.swift in Sources */,
 				05D324CD25472D4300F50213 /* MeetupEventListAPIWorkerTests.swift in Sources */,
