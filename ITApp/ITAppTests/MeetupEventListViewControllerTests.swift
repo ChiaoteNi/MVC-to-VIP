@@ -11,6 +11,7 @@ import Testing
 @testable import ITApp
 
 // NOTE: 
+@Suite("Behavior with life cycle for the MeetupEventList") // not required
 struct MeetupEventListVCTests {
 
     private var sut: MeetupEventListViewController
