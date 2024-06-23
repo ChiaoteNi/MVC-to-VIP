@@ -45,6 +45,7 @@
 		65BAABC025495902003ED7E0 /* MeetupEventListModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BAABB925495902003ED7E0 /* MeetupEventListModels.swift */; };
 		65BAABD1254E7949003ED7E0 /* MeetupEventListPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BAABD0254E7949003ED7E0 /* MeetupEventListPresenterTests.swift */; };
 		77BC5F77AB2E2B100BB2DC02 /* Pods_ITApp_ITAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24D1C5BC750E0542F18F75D9 /* Pods_ITApp_ITAppUITests.framework */; };
+		934ED5582C2807C900509DA3 /* SerializedTestDemoSuite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934ED5572C2807C900509DA3 /* SerializedTestDemoSuite.swift */; };
 		B9598ED2B3CAEF86394F0F03 /* Pods_ITApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A47B658FCB8AC8C8EB209B /* Pods_ITApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -113,6 +114,7 @@
 		65BAABB925495902003ED7E0 /* MeetupEventListModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetupEventListModels.swift; sourceTree = "<group>"; };
 		65BAABD0254E7949003ED7E0 /* MeetupEventListPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetupEventListPresenterTests.swift; sourceTree = "<group>"; };
 		89F77668734EBFE1E41FF7DF /* Pods-ITApp-ITAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ITApp-ITAppUITests.debug.xcconfig"; path = "Target Support Files/Pods-ITApp-ITAppUITests/Pods-ITApp-ITAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		934ED5572C2807C900509DA3 /* SerializedTestDemoSuite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerializedTestDemoSuite.swift; sourceTree = "<group>"; };
 		C9A47B658FCB8AC8C8EB209B /* Pods_ITApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ITApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EABD1983B4995480E19B6258 /* Pods-ITAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ITAppTests.release.xcconfig"; path = "Target Support Files/Pods-ITAppTests/Pods-ITAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		F992A8CD2D8663B0D24F56B3 /* Pods-ITAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ITAppTests.debug.xcconfig"; path = "Target Support Files/Pods-ITAppTests/Pods-ITAppTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 		059902AD252214210077BAA2 /* ITAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				934ED5562C28075200509DA3 /* Some other cases */,
 				059902B0252214210077BAA2 /* Info.plist */,
 				6544B16E255319E600A2CF7D /* DummyFactory.swift */,
 				05D324CC25472D4300F50213 /* MeetupEventListAPIWorkerTests.swift */,
@@ -315,6 +318,14 @@
 				657714FE2538AF8F0076CC7A /* Array + SafetyAccess.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		934ED5562C28075200509DA3 /* Some other cases */ = {
+			isa = PBXGroup;
+			children = (
+				934ED5572C2807C900509DA3 /* SerializedTestDemoSuite.swift */,
+			);
+			path = "Some other cases";
 			sourceTree = "<group>";
 		};
 		C49C0F1B39ABDFF6B1B27CCB /* Pods */ = {
