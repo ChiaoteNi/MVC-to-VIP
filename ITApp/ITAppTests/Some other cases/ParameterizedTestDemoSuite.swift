@@ -23,22 +23,62 @@ struct PresenterTestSuite {
 
     @Test(
         "Transformation to convert date to a displaying string",
-        .tags(.parameterizedTest, .testDescriptions),
-        arguments: PresenterTestCase.inputs, PresenterTestCase.outputs
+        .tags(.parameterizedTest),
+        arguments: [
+            Date(),
+            Date().addingTimeInterval(3 * 3600),
+            Date().addingTimeInterval(-3 * 3600),
+            Date().addingTimeInterval(24 * 3600),
+            Date().addingTimeInterval(1.25 * 3600),
+            Date().addingTimeInterval(12 * 30 * 3600),
+        ]
     )
-    func timeTransformForDisplay(
-        input: PresenterTestCase.Input,
-        expected: PresenterTestCase.Expected
-    ) async throws {
-        
+    func timeTransformForDisplay(seed: Date) async throws {
+        let input = makeInput(with: seed)
         sut.presentMeetupEvents(response: input)
-        
+
+        let viewModel = await withCheckedContinuation { continuation in
+            viewControllerSpy.displayMeetupEventsDone = { viewModel in
+                continuation.resume(returning: viewModel)
+            }
+        }
+        let result = try #require(viewModel.recentlyEvents.first)
+
+        let targetPattern = #"^\d{2}月\d{2}日$"#
+//        let targetPattern = #"^\d{2}月\d{2}日.*$"#
+        #expect(result.dateText.matches(regex: targetPattern))
     }
+
+//    @Test(
+//        "Transformation to convert date to a displaying string with test descriptions",
+//        .tags(.parameterizedTest, .testDescriptions),
+//        arguments: PresenterTestCase.allCases
+//    )
+//    fileprivate func timeTransformForDisplay(testCase: PresenterTestCase) async throws {
+//        sut.presentMeetupEvents(response: testCase.input)
+//
+//        let viewModel = await withCheckedContinuation { continuation in
+//            viewControllerSpy.displayMeetupEventsDone = { viewModel in
+//                continuation.resume(returning: viewModel)
+//            }
+//        }
+//        let result = try #require(viewModel.recentlyEvents.first)
+//
+//        switch testCase.expected {
+//        case .today:
+//            #expect(result.dateText.contains("(今天)"))
+//        case let .specificString(string):
+//            #expect(result.dateText == string)
+//        case let .formatted(expression):
+//            #expect(result.dateText.matches(regex: expression))
+//        }
+//    }
 }
 
-enum PresenterTestCase: CustomTestStringConvertible, CaseIterable {
+// MARK: - Test cases
 
-    typealias Input = MeetupEventList.FetchEvents.Response
+fileprivate enum PresenterTestCase: CustomTestStringConvertible, CaseIterable {
+
     // These enum cases are extremely hard to read.
     // Even if we change the case by removing the last part of Expected..., it sill difficult to understand what the test case is due to missing information.
     case nowExpectedToday
@@ -78,6 +118,7 @@ enum PresenterTestCase: CustomTestStringConvertible, CaseIterable {
             return makeInput(with: Date(timeIntervalSince1970: 0))
         }
     }
+    typealias Input = MeetupEventList.FetchEvents.Response
 
     // MARK: Expected
 
@@ -86,15 +127,16 @@ enum PresenterTestCase: CustomTestStringConvertible, CaseIterable {
         case .nowExpectedToday, .twoHoursLaterExpectedToday, .twoHoursBeforeExpectedToday:
             return .today
         case .twentyFourHoursAfterExpectedFormatted:
-            return .formatted(expression: "MM月dd日")
+            // A regex patten for 'MM月dd日'
+            return .formatted(pattern: #"^\d{2}月\d{2}日$"#)
         case .OriginTimeExpectedJaneFirst:
-            return .specificString("1月1日")
+            return .specificString("01月01日")
         }
     }
 
     enum Expected {
         case today
-        case formatted(expression: String)
+        case formatted(pattern: String)
         case specificString(String)
     }
 
@@ -107,45 +149,65 @@ enum PresenterTestCase: CustomTestStringConvertible, CaseIterable {
     static var outputs: [Expected] {
         allCases.map { $0.expected }
     }
-
-    private func makeInput(with time: Date) -> MeetupEventList.FetchEvents.Response {
-        let event = MeetupEvent(
-            id: "1",
-            title: "Dummy Event",
-            description: nil,
-            coverImageLink: nil,
-            hostName: "Dummy author",
-            address: nil,
-            date: time
-        )
-        return MeetupEventList.FetchEvents.Response(
-            recentlyEvents: [(event, .unfavorite)],
-            historyEvents: []
-        )
-    }
 }
 
-fileprivate
-final class MeetupEventListDisplayLogicSpy: MeetupEventListDisplayLogic {
+fileprivate class MeetupEventListDisplayLogicSpy: MeetupEventListDisplayLogic {
+
+    typealias FetchEventsViewModel = MeetupEventList.FetchEvents.ViewModel
+    typealias UpdateEventsViewModel = MeetupEventList.UpdateHistoryEvent.ViewModel
 
     var isDisplayMeetupEventsCalled: Bool = false
     var isDisplayUpdateHistoryEventCalled: Bool = false
 
-    var fetchEventsViewModel: MeetupEventList.FetchEvents.ViewModel!
-    var updateEventsViewModel: MeetupEventList.UpdateHistoryEvent.ViewModel!
+    var fetchEventsViewModel: FetchEventsViewModel?
+    var updateEventsViewModel: UpdateEventsViewModel?
 
-    var displayMeetupEventsDone: (() -> Void)?
-    var displayUpdateHistoryEventDone: (() -> Void)?
+    var displayMeetupEventsDone: ((_ fetchEventsViewModel: FetchEventsViewModel) -> Void)? {
+        didSet {
+            guard let viewModel = fetchEventsViewModel else { return }
+            displayMeetupEventsDone?(viewModel)
+        }
+    }
+    var displayUpdateHistoryEventDone: ((_ updateEventsViewModel: UpdateEventsViewModel) -> Void)? {
+        didSet {
+            guard let viewModel = updateEventsViewModel else { return }
+            displayUpdateHistoryEventDone?(viewModel)
+        }
+    }
 
-    func displayMeetupEvents(viewModel: MeetupEventList.FetchEvents.ViewModel) {
+    func displayMeetupEvents(viewModel: FetchEventsViewModel) {
         isDisplayMeetupEventsCalled = true
         fetchEventsViewModel = viewModel
-        displayMeetupEventsDone?()
+        displayMeetupEventsDone?(viewModel)
     }
 
-    func displayUpdateHistoryEvent(viewModel: MeetupEventList.UpdateHistoryEvent.ViewModel) {
+    func displayUpdateHistoryEvent(viewModel: UpdateEventsViewModel) {
         isDisplayUpdateHistoryEventCalled = true
         updateEventsViewModel = viewModel
-        displayUpdateHistoryEventDone?()
+        displayUpdateHistoryEventDone?(viewModel)
     }
+}
+
+// MARK: - Util functions
+
+private extension String {
+    func matches(regex pattern: String) -> Bool {
+        range(of: pattern, options: .regularExpression) != nil
+    }
+}
+
+private func makeInput(with time: Date) -> MeetupEventList.FetchEvents.Response {
+    let event = MeetupEvent(
+        id: "1",
+        title: "Dummy Event",
+        description: nil,
+        coverImageLink: nil,
+        hostName: "Dummy author",
+        address: nil,
+        date: time
+    )
+    return MeetupEventList.FetchEvents.Response(
+        recentlyEvents: [(event, .unfavorite)],
+        historyEvents: []
+    )
 }
