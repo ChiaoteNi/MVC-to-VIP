@@ -257,6 +257,7 @@
 		059902AD252214210077BAA2 /* ITAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				934ED5592C28203500509DA3 /* TestingTag.swift */,
 				934ED5562C28075200509DA3 /* Some other cases */,
 				059902B0252214210077BAA2 /* Info.plist */,
 				6544B16E255319E600A2CF7D /* DummyFactory.swift */,
@@ -634,6 +635,7 @@
 				934ED5602C2835EB00509DA3 /* ParameterizedTestDemoSuite.swift in Sources */,
 				6544B1692550640B00A2CF7D /* MeetupEventListInteractorTests.swift in Sources */,
 				05D324CD25472D4300F50213 /* MeetupEventListAPIWorkerTests.swift in Sources */,
+				934ED55A2C28203500509DA3 /* TestingTag.swift in Sources */,
 				65BAABD1254E7949003ED7E0 /* MeetupEventListPresenterTests.swift in Sources */,
 				6544B16B25509B7600A2CF7D /* MeetupEventListViewControllerTests.swift in Sources */,
 			);
