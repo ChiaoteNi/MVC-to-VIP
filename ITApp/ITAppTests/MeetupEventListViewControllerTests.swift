@@ -16,7 +16,8 @@ import Testing
 struct MeetupEventListVCTests {
 
     // Useful during developing
-    @MainActor @Suite("Behavior within life cycle")
+    @MainActor 
+    @Suite("Behavior within life cycle")
     struct LifeCycleRelatedCases {
 
         private var sut: MeetupEventListViewController
@@ -36,7 +37,10 @@ struct MeetupEventListVCTests {
             sut.cp_resetInteractor(interactor: interactorSpy)
             sut.viewDidLoad()
 
-            #expect(interactorSpy.isFetchMeetupEventsCalled, "MeetupEventList should fetch events when viewDidLoad.")
+            #expect(
+                interactorSpy.isFetchMeetupEventsCalled,
+                "MeetupEventList should fetch events when viewDidLoad."
+            )
         }
     }
 
@@ -51,7 +55,8 @@ struct MeetupEventListVCTests {
             sut = .init()
         }
 
-        @MainActor @Test("fetchData - reload TableView ")
+        @MainActor 
+        @Test("fetchData - reload TableView ")
         func reloadTableViewAfterFetchData() {
             let spy: TableViewSpy = .init()
             sut.cp_resetTableView(tableView: spy)
@@ -68,65 +73,63 @@ struct MeetupEventListVCTests {
     }
 }
 
-//final class MeetupEventListViewControllerTests: XCTestCase {
-//
-//    private var sut: MeetupEventListViewController!
-//    
-//    override func setUpWithError() throws {
-//        sut = .init()
-//    }
-//
-//    override func tearDownWithError() throws {
-//        sut = nil
-//    }
-//
-//    // NOTE: we can just add test case with the @Test macro,
-//    // and it will display on the Test navigator as well.
-//    // However, somehow it wont display the checkbox within the editing area,
-//    // and I'm not sure if it's a bug from Xcode or apple intently doing this.
-//    @Test @MainActor
-//    func viewDidLoadBehavior() {
-//        sut = .init()
-//        let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
-//        sut.cp_resetInteractor(interactor: interactorSpy)
-//        sut.viewDidLoad()
-//
-//        #expect(interactorSpy.isFetchMeetupEventsCalled, "MeetupEventList should fetch events when viewDidLoad.")
-//    }
-//
-//    // NOTE: for more details, please see here:
-//    // https://developer.apple.com/documentation/testing/migratingfromxctest
-////    func testShouldFetchMeetupEventsWhenViewDidLoad() throws {
-////        let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
-////        sut.cp_resetInteractor(interactor: interactorSpy)
-////        sut.viewDidLoad()
-////        
-////        XCTAssert(
-////            interactorSpy.isFetchMeetupEventsCalled,
-////            "MeetupEventList should fetch events when viewDidLoad."
-////        )
-////    }
-//
-////    func testShouldUpdateDataSourceAndReloadDataWhenDisplayFetchEvents() throws {
-////        let spy: TableViewSpy = .init()
-////        sut.cp_resetTableView(tableView: spy)
-////        sut.viewDidLoad()
-////        
-////        let viewModel: MeetupEventList.FetchEvents.ViewModel = .init(
-////            historyEvents: [Seed.Event.historyEvent, Seed.Event.dummyEvent],
-////            recentlyEvents: []
-////        )
-////        sut.displayMeetupEvents(viewModel: viewModel)
-////        XCTAssert(
-////            spy.isReloadDataCalled,
-////            "TableView should reload after displayMeetupEvents."
-////        )
-////        XCTAssert(
-////            spy.numberOfRows(inSection: 1) == 2,
-////            "The number of row sections 1 should be the same as historyEvents amounts."
-////         )
-////    }
-//}
+final class MeetupEventListViewControllerTests: XCTestCase {
+
+    private var sut: MeetupEventListViewController!
+    
+    override func setUpWithError() throws {
+        sut = .init()
+    }
+
+    override func tearDownWithError() throws {
+        sut = nil
+    }
+
+    // NOTE: we can just add test case with the @Test macro,
+    // and it will display on the Test navigator as well.
+    // However, somehow it wont display the checkbox within the editing area,
+    // and I'm not sure if it's a bug from Xcode or apple intently doing this.
+    @Test @MainActor
+    func viewDidLoadBehavior() {
+        sut = .init()
+        let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
+        sut.cp_resetInteractor(interactor: interactorSpy)
+        sut.viewDidLoad()
+
+        #expect(interactorSpy.isFetchMeetupEventsCalled, "MeetupEventList should fetch events when viewDidLoad.")
+    }
+
+    func testShouldFetchMeetupEventsWhenViewDidLoad() throws {
+        let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
+        sut.cp_resetInteractor(interactor: interactorSpy)
+        sut.viewDidLoad()
+        
+        XCTAssert(
+            interactorSpy.isFetchMeetupEventsCalled,
+            "MeetupEventList should fetch events when viewDidLoad."
+        )
+    }
+
+    func testShouldUpdateDataSourceAndReloadDataWhenDisplayFetchEvents() throws {
+        let spy: TableViewSpy = .init()
+        sut.cp_resetTableView(tableView: spy)
+        sut.viewDidLoad()
+        
+        let viewModel: MeetupEventList.FetchEvents.ViewModel = .init(
+            historyEvents: [Seed.Event.historyEvent, Seed.Event.dummyEvent],
+            recentlyEvents: []
+        )
+        sut.displayMeetupEvents(viewModel: viewModel)
+        XCTAssert(
+            spy.isReloadDataCalled,
+            "TableView should reload after displayMeetupEvents."
+        )
+        XCTAssert(
+            spy.numberOfRows(inSection: 1) == 2,
+            "The number of row sections 1 should be the same as historyEvents amounts."
+         )
+    }
+}
 
 private class MeetupEventListBusinessLogicSpy: MeetupEventListBusinessLogic {
     var isFetchMeetupEventsCalled: Bool = false
