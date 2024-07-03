@@ -10,6 +10,7 @@ import Foundation
 import Testing
 @testable import ITApp
 
+@Suite("Presenter Test Cases")
 struct PresenterTestSuite {
 
     private let sut: MeetupEventListPresenter
@@ -37,6 +38,34 @@ struct PresenterTestSuite {
         let input = makeInput(with: seed)
         sut.presentMeetupEvents(response: input)
 
+        // We can use withCheckedContinuation
+        // or a new API `conformation(_:expectedCount:)` for the call-back cases
+        let viewModel = await withCheckedContinuation { continuation in
+            viewControllerSpy.displayMeetupEventsDone = { viewModel in
+                continuation.resume(returning: viewModel)
+            }
+        }
+        // Use the `#require` to unwrap the value, and it will cause the case fail when it's nil
+        let result = try #require(viewModel.recentlyEvents.first)
+
+//        let targetPattern = #"^\d{2}月\d{2}日$"#
+        let targetPattern = #"^\d{2}月\d{2}日.*$"#
+        // Use the `#expect` to varify the result
+        #expect(result.dateText.matches(regex: targetPattern))
+    }
+
+    /*
+     Swift Testing allows us to set up arguments for the testing function.
+     For cases with many inputs and expected outputs, we only need to write the test function once and then pass the arguments as parameters
+     */
+    @Test(
+        "Transformation to convert date to a displaying string with test descriptions",
+        .tags(.parameterizedTest, .testDescriptions),
+        arguments: PresenterTestCase.allCases
+    )
+    fileprivate func timeTransformForDisplay(testCase: PresenterTestCase) async throws {
+        sut.presentMeetupEvents(response: testCase.input)
+
         let viewModel = await withCheckedContinuation { continuation in
             viewControllerSpy.displayMeetupEventsDone = { viewModel in
                 continuation.resume(returning: viewModel)
@@ -44,35 +73,15 @@ struct PresenterTestSuite {
         }
         let result = try #require(viewModel.recentlyEvents.first)
 
-        let targetPattern = #"^\d{2}月\d{2}日$"#
-//        let targetPattern = #"^\d{2}月\d{2}日.*$"#
-        #expect(result.dateText.matches(regex: targetPattern))
+        switch testCase.expected {
+        case .today:
+            #expect(result.dateText.contains("(今天)"))
+        case let .specificString(string):
+            #expect(result.dateText == string)
+        case let .formatted(expression):
+            #expect(result.dateText.matches(regex: expression))
+        }
     }
-
-//    @Test(
-//        "Transformation to convert date to a displaying string with test descriptions",
-//        .tags(.parameterizedTest, .testDescriptions),
-//        arguments: PresenterTestCase.allCases
-//    )
-//    fileprivate func timeTransformForDisplay(testCase: PresenterTestCase) async throws {
-//        sut.presentMeetupEvents(response: testCase.input)
-//
-//        let viewModel = await withCheckedContinuation { continuation in
-//            viewControllerSpy.displayMeetupEventsDone = { viewModel in
-//                continuation.resume(returning: viewModel)
-//            }
-//        }
-//        let result = try #require(viewModel.recentlyEvents.first)
-//
-//        switch testCase.expected {
-//        case .today:
-//            #expect(result.dateText.contains("(今天)"))
-//        case let .specificString(string):
-//            #expect(result.dateText == string)
-//        case let .formatted(expression):
-//            #expect(result.dateText.matches(regex: expression))
-//        }
-//    }
 }
 
 // MARK: - Test cases
@@ -90,11 +99,11 @@ fileprivate enum PresenterTestCase: CustomTestStringConvertible, CaseIterable {
     var testDescription: String {
         switch self {
         case .nowExpectedToday:
-            return "Input 'now' - expected to transform to 'today'"
+            return "Input 'now' - expected to transform to including '今天'"
         case .twoHoursLaterExpectedToday:
-            return "Input 'now + 2 hours' - expected to transform to 'today'"
+            return "Input 'now + 2 hours' - expected to transform to including '今天'"
         case .twoHoursBeforeExpectedToday:
-            return "Input 'now - 2 hours' - expected to transform to 'today'"
+            return "Input 'now - 2 hours' - expected to transform to including '今天'"
         case .twentyFourHoursAfterExpectedFormatted:
             return "Input 'now + 24 hours' - expected to transform to 'MM月dd日'"
         case .OriginTimeExpectedJaneFirst:
