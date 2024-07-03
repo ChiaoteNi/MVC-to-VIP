@@ -12,7 +12,7 @@ import Testing
 
 // 1. The macro @Suite is not required, the struct/class will be marked as a suite automatically when there's a @Test in its scope
 // 2. When you use a tag on a suite, all of its tests and sub-suite are with that tag as well
-@Suite("MeetupEventListVCTests", .tags(.categorizedTest)) //
+@Suite("MeetupEventListVC", .tags(.categorizedTest)) //
 struct MeetupEventListVCTests {
 
     // Useful during developing
@@ -25,11 +25,6 @@ struct MeetupEventListVCTests {
         init() throws {
             sut = .init()
         }
-
-        // // NOTE:
-        //    deinit {
-        //        sut = nil
-        //    }
 
         @Test("viewDidLoad - fetch data") // NOTE:
         func viewDidLoadBehavior() {
@@ -73,65 +68,7 @@ struct MeetupEventListVCTests {
     }
 }
 
-final class MeetupEventListViewControllerTests: XCTestCase {
-
-    private var sut: MeetupEventListViewController!
-    
-    override func setUpWithError() throws {
-        sut = .init()
-    }
-
-    override func tearDownWithError() throws {
-        sut = nil
-    }
-
-    // NOTE: we can just add test case with the @Test macro,
-    // and it will display on the Test navigator as well.
-    // However, somehow it wont display the checkbox within the editing area,
-    // and I'm not sure if it's a bug from Xcode or apple intently doing this.
-    @Test @MainActor
-    func viewDidLoadBehavior() {
-        sut = .init()
-        let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
-        sut.cp_resetInteractor(interactor: interactorSpy)
-        sut.viewDidLoad()
-
-        #expect(interactorSpy.isFetchMeetupEventsCalled, "MeetupEventList should fetch events when viewDidLoad.")
-    }
-
-    func testShouldFetchMeetupEventsWhenViewDidLoad() throws {
-        let interactorSpy: MeetupEventListBusinessLogicSpy = .init()
-        sut.cp_resetInteractor(interactor: interactorSpy)
-        sut.viewDidLoad()
-        
-        XCTAssert(
-            interactorSpy.isFetchMeetupEventsCalled,
-            "MeetupEventList should fetch events when viewDidLoad."
-        )
-    }
-
-    func testShouldUpdateDataSourceAndReloadDataWhenDisplayFetchEvents() throws {
-        let spy: TableViewSpy = .init()
-        sut.cp_resetTableView(tableView: spy)
-        sut.viewDidLoad()
-        
-        let viewModel: MeetupEventList.FetchEvents.ViewModel = .init(
-            historyEvents: [Seed.Event.historyEvent, Seed.Event.dummyEvent],
-            recentlyEvents: []
-        )
-        sut.displayMeetupEvents(viewModel: viewModel)
-        XCTAssert(
-            spy.isReloadDataCalled,
-            "TableView should reload after displayMeetupEvents."
-        )
-        XCTAssert(
-            spy.numberOfRows(inSection: 1) == 2,
-            "The number of row sections 1 should be the same as historyEvents amounts."
-         )
-    }
-}
-
-private class MeetupEventListBusinessLogicSpy: MeetupEventListBusinessLogic {
+private final class MeetupEventListBusinessLogicSpy: MeetupEventListBusinessLogic {
     var isFetchMeetupEventsCalled: Bool = false
 
     func fetchMeetupEvents(request: MeetupEventList.FetchEvents.Request) {
